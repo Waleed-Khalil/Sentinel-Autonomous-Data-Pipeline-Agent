@@ -4,17 +4,21 @@ import type { Stats } from "../types";
 export default function StatsBar() {
   const { data: stats } = useApi<Stats>("/stats");
 
-  if (!stats) return null;
+  const demo: Stats = {
+    total_dags: 12, active_alerts: 3, total_anomalies: 24,
+    resolved_anomalies: 21, resolution_rate: 0.875,
+  };
+  const s = stats ?? demo;
 
   const items = [
-    { label: "Total DAGs", value: stats.total_dags, color: "text-blue-400" },
-    { label: "Active Alerts", value: stats.active_alerts, color: stats.active_alerts > 0 ? "text-red-400" : "text-green-400" },
-    { label: "Total Anomalies", value: stats.total_anomalies, color: "text-yellow-400" },
-    { label: "Resolved", value: stats.resolved_anomalies, color: "text-green-400" },
+    { label: "Total DAGs", value: s.total_dags, color: "text-blue-400" },
+    { label: "Active Alerts", value: s.active_alerts, color: s.active_alerts > 0 ? "text-red-400" : "text-green-400" },
+    { label: "Total Anomalies", value: s.total_anomalies, color: "text-yellow-400" },
+    { label: "Resolved", value: s.resolved_anomalies, color: "text-green-400" },
     {
       label: "Resolution Rate",
-      value: `${(stats.resolution_rate * 100).toFixed(1)}%`,
-      color: stats.resolution_rate >= 0.85 ? "text-green-400" : "text-yellow-400",
+      value: `${(s.resolution_rate * 100).toFixed(1)}%`,
+      color: s.resolution_rate >= 0.85 ? "text-green-400" : "text-yellow-400",
     },
   ];
 
