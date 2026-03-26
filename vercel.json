@@ -1,10 +1,11 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/dist",
-  "framework": "vite",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/_/backend/(.*)",
+      "destination": "/_/backend/$1"
+    },
+    {
+      "source": "/((?!_/backend).*)",
       "destination": "/index.html"
     }
   ],
@@ -12,7 +13,9 @@
     "frontend": {
       "entrypoint": "frontend",
       "routePrefix": "/",
-      "framework": "vite"
+      "framework": "vite",
+      "buildCommand": "npm install && npm run build",
+      "outputDirectory": "dist"
     },
     "backend": {
       "entrypoint": "backend",
