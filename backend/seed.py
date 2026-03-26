@@ -239,8 +239,7 @@ def seed():
     cur = conn.cursor()
 
     print("Clearing existing data...")
-    for table in ["audit_log", "anomalies", "pipeline_data", "dag_runs", "dags"]:
-        cur.execute(f"DELETE FROM {table}")
+    cur.execute("TRUNCATE audit_log, anomalies, pipeline_data, dag_runs, dags CASCADE")
 
     print("Seeding DAGs...")
     now = datetime.now(timezone.utc)

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-const API_BASE = "/api/v1";
+const API_BASE = "/_/backend/api/v1";
 
 export function useApi<T>(path: string, deps: unknown[] = []) {
   const [data, setData] = useState<T | null>(null);

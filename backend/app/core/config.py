@@ -1,3 +1,5 @@
+import os
+
 from pydantic_settings import BaseSettings
 
 
@@ -12,6 +14,27 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+
+    @property
+    def async_database_url(self) -> str:
+        url = self.database_url
+        if url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql://", 1)
+        if url.startswith("postgresql://") and "+asyncpg" not in url:
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        # Strip params that asyncpg doesn't support
+        for param in ["channel_binding=require", "sslmode=require"]:
+            url = url.replace(f"&{param}", "").replace(f"?{param}&", "?").replace(f"?{param}", "")
+        return url
+
+    @property
+    def sync_database_url(self) -> str:
+        url = self.database_url_sync or self.database_url
+        if url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql://", 1)
+        if "+asyncpg" in url:
+            url = url.replace("postgresql+asyncpg://", "postgresql://", 1)
+        return url
 
 
 settings = Settings()

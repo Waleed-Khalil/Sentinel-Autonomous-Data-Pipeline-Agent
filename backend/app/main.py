@@ -1,10 +1,10 @@
 import asyncio
+import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import router
-from app.services.scanner import BackgroundScanner
 
 app = FastAPI(
     title="Sentinel — Autonomous Data Pipeline Agent",
@@ -22,12 +22,15 @@ app.add_middleware(
 
 app.include_router(router)
 
-scanner = BackgroundScanner()
+# Only run background scanner in Docker/long-running mode, not in serverless
+if not os.environ.get("VERCEL"):
+    from app.services.scanner import BackgroundScanner
 
+    scanner = BackgroundScanner()
 
-@app.on_event("startup")
-async def startup():
-    asyncio.create_task(scanner.run())
+    @app.on_event("startup")
+    async def startup():
+        asyncio.create_task(scanner.run())
 
 
 @app.get("/health")

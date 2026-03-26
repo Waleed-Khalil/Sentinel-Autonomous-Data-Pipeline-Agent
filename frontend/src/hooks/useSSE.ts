@@ -6,7 +6,7 @@ export function useSSE() {
   const esRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
-    const es = new EventSource("/api/v1/stream");
+    const es = new EventSource("/_/backend/api/v1/stream");
     esRef.current = es;
 
     es.onmessage = (event) => {
@@ -22,7 +22,7 @@ export function useSSE() {
       es.close();
       // Reconnect after 5s
       setTimeout(() => {
-        esRef.current = new EventSource("/api/v1/stream");
+        esRef.current = new EventSource("/_/backend/api/v1/stream");
       }, 5000);
     };
 
